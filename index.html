@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#070b14">
+  <title>TradeVision AI</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #070b14;
+      color: #ffffff;
+      min-height: 100vh;
+    }
+
+    button,
+    select,
+    input {
+      font: inherit;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 520px;
+      margin: auto;
+      min-height: 100vh;
+      padding-bottom: 30px;
+    }
+
+    /* HEADER */
+    header {
+      padding: 22px 18px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #1c2535;
+      position: sticky;
+      top: 0;
+      background: rgba(7, 11, 20, 0.96);
+      backdrop-filter: blur(12px);
+      z-index: 10;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .logo {
+      width: 43px;
+      height: 43px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #1d8cff, #6c4cff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 21px;
+      box-shadow: 0 0 20px rgba(48, 130, 255, 0.25);
+    }
+
+    .brand h1 {
+      font-size: 19px;
+      letter-spacing: .3px;
+    }
+
+    .brand p {
+      color: #7e8ba1;
+      font-size: 11px;
+      margin-top: 3px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #101827;
+      border: 1px solid #243044;
+      padding: 8px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      color: #aebbd0;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      background: #21d68b;
+      border-radius: 50%;
+    }
+
+    /* HERO */
+    .hero {
+      padding: 24px 18px 10px;
+    }
+
+    .hero h2 {
+      font-size: 27px;
+      line-height: 1.15;
+    }
+
+    .hero h2 span {
+      color: #4ca3ff;
+    }
+
+    .hero p {
+      color: #8491a6;
+      font-size: 13px;
+      margin-top: 9px;
+      line-height: 1.5;
+    }
+
+    /* CONTROLS */
+    .controls {
+      margin: 18px;
+      padding: 15px;
+      background: #0d1421;
+      border: 1px solid #1c293c;
+      border-radius: 17px;
+    }
+
+    .control-title {
+      color: #9ba9bd;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 9px;
+    }
+
+    select {
+      width: 100%;
+      background: #111b2b;
+      border: 1px solid #29384f;
+      color: white;
+      border-radius: 11px;
+      padding: 12px;
+      outline: none;
+    }
+
+    .analyze-btn {
+      width: 100%;
+      margin-top: 12px;
+      border: none;
+      border-radius: 11px;
+      padding: 13px;
+      color: white;
+      font-weight: bold;
+      background: linear-gradient(90deg, #1677ff, #714dff);
+      cursor: pointer;
+    }
+
+    .analyze-btn:active {
+      transform: scale(.98);
+    }
+
+    /* SIGNAL */
+    .section-heading {
+      padding: 10px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-heading h3 {
+      font-size: 16px;
+    }
+
+    .section-heading span {
+      font-size: 11px;
+      color: #718097;
+    }
+
+    .signal-card {
+      margin: 0 18px 15px;
+      padding: 17px;
+      background: #0d1421;
+      border: 1px solid #233148;
+      border-radius: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .signal-card.call {
+      border-left: 4px solid #22d58a;
+    }
+
+    .signal-card.put {
+      border-left: 4px solid #ff526d;
+    }
+
+    .signal-card.neutral {
+      border-left: 4px solid #f3b93f;
+    }
+
+    .new-signal {
+      display: inline-block;
+      background: rgba(255,255,255,.06);
+      color: #aab8cb;
+      border-radius: 8px;
+      padding: 6px 8px;
+      font-size: 10px;
+      font-weight: bold;
+      margin-bottom: 13px;
+    }
+
+    .asset-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .asset {
+      font-size: 19px;
+      font-weight: bold;
+    }
+
+    .otc {
+      font-size: 9px;
+      color: #ffb74d;
+      border: 1px solid #684b1c;
+      padding: 4px 6px;
+      border-radius: 5px;
+      margin-left: 5px;
+    }
+
+    .time {
+      color: #7d8ca4;
+      font-size: 11px;
+    }
+
+    .direction {
+      margin: 15px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .direction-label {
+      color: #8390a5;
+      font-size: 11px;
+    }
+
+    .direction-value {
+      font-size: 26px;
+      font-weight: 900;
+    }
+
+    .call-text {
+      color: #22d58a;
+    }
+
+    .put-text {
+      color: #ff526d;
+    }
+
+    .neutral-text {
+      color: #f3b93f;
+    }
+
+    .details {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+    }
+
+    .detail {
+      background: #111b2a;
+      border-radius: 10px;
+      padding: 10px 7px;
+      text-align: center;
+    }
+
+    .detail small {
+      display: block;
+      color: #718097;
+      font-size: 9px;
+      margin-bottom: 5px;
+    }
+
+    .detail strong {
+      font-size: 12px;
+    }
+
+    .score {
+      margin-top: 14px;
+    }
+
+    .score-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #8b99ae;
+      margin-bottom: 7px;
+    }
+
+    .bar {
+      width: 100%;
+      height: 7px;
+      background: #1b2637;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 86%;
+      background: linear-gradient(90deg, #21d68b, #3aa5ff);
+      border-radius: 20px;
+    }
+
+    .reasons {
+      margin-top: 14px;
+      padding-top: 13px;
+      border-top: 1px solid #1d293b;
+    }
+
+    .reasons p {
+      font-size: 11px;
+      color: #8896aa;
+      margin: 6px 0;
+    }
+
+    .reasons b {
+      color: #cbd5e4;
+    }
+
+    /* COUNTDOWN */
+    .countdown {
+      margin-top: 14px;
+      text-align: center;
+      background: #111b2a;
+      padding: 11px;
+      border-radius: 10px;
+    }
+
+    .countdown span {
+      color: #748299;
+      font-size: 10px;
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .countdown strong {
+      font-size: 18px;
+    }
+
+    /* DISCLAIMER */
+    .warning {
+      margin: 18px;
+      padding: 13px;
+      border-radius: 12px;
+      background: #17140d;
+      border: 1px solid #40331a;
+      color: #a99b78;
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    /* NAV */
+    .bottom-nav {
+      position: sticky;
+      bottom: 0;
+      background: rgba(7,11,20,.97);
+      border-top: 1px solid #1b2535;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 10px 5px;
+      margin-top: 20px;
+    }
+
+    .nav-item {
+      text-align: center;
+      color: #68768c;
+      font-size: 10px;
+      padding: 7px 2px;
+    }
+
+    .nav-item.active {
+      color: #4ca3ff;
+    }
+
+    .nav-icon {
+      font-size: 18px;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* DESKTOP */
+    @media (min-width: 700px) {
+      body {
+        padding: 20px;
+      }
+
+      .app {
+        border: 1px solid #1d293b;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 20px 70px rgba(0,0,0,.4);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <header>
+    <div class="brand">
+      <div class="logo">⚡</div>
+      <div>
+        <h1>TradeVision AI</h1>
+        <p>Market Analysis Assistant</p>
+      </div>
+    </div>
+
+    <div class="status">
+      <span class="dot"></span>
+      Demo
+    </div>
+  </header>
+
+  <section class="hero">
+    <h2>AI Trading<br><span>Signal Center</span></h2>
+    <p>
+      Analyze market conditions and receive structured
+      CALL, PUT or NO TRADE analysis.
+    </p>
+  </section>
+
+  <section class="controls">
+
+    <div class="control-title">Select Market</div>
+
+    <select id="asset">
+      <option>EUR/USD</option>
+      <option>GBP/USD</option>
+      <option>USD/JPY</option>
+      <option>AUD/USD</option>
+      <option>USD/CAD</option>
+      <option>NZD/JPY</option>
+      <option>EUR/JPY</option>
+      <option>GBP/JPY</option>
+      <option>XAU/USD</option>
+    </select>
+
+    <div class="control-title" style="margin-top:13px;">
+      Timeframe
+    </div>
+
+    <select id="timeframe">
+      <option>1 Minute</option>
+      <option>5 Minutes</option>
+      <option>15 Minutes</option>
+      <option>30 Minutes</option>
+      <option>1 Hour</option>
+    </select>
+
+    <button class="analyze-btn" onclick="analyzeMarket()">
+      🤖 ANALYZE MARKET
+    </button>
+
+  </section>
+
+  <div class="section-heading">
+    <h3>🔔 Signal Feed</h3>
+    <span id="signalCount">3 signals</span>
+  </div>
+
+  <div id="signals">
+
+    <!-- SIGNAL 1 -->
+    <div class="signal-card call">
+
+      <div class="new-signal">🔔 NEW SIGNAL • DEMO</div>
+
+      <div class="asset-row">
+        <div class="asset">
+          🇪🇺 EUR/USD
+        </div>
+        <div class="time">11:08:20</div>
+      </div>
+
+      <div class="direction">
+        <div>
+          <div class="direction-label">DIRECTION</div>
+          <div class="direction-value call-text">CALL ↑</div>
+        </div>
+
+        <div style="text-align:right;">
+          <div class="direction-label">EXPIRY</div>
+          <strong>2 MIN</strong>
+        </div>
+      </div>
+
+      <div class="details">
+        <div class="detail">
+          <small>TIMEFRAME</small>
+          <strong>1 MIN</strong>
+        </div>
+
+        <div class="detail">
+          <small>SCORE</small>
+          <strong>86/100</strong>
+        </div>
+
+        <div class="detail">
+          <small>CONFIDENCE</small>
+          <strong>HIGH</strong>
+        </div>
+      </div>
+
+      <div class="score">
+        <div class="score-top">
+          <span>Analysis Strength</span>
+          <b>86%</b>
+        </div>
+        <div class="bar">
+          <div class="bar-fill"></div>
+        </div>
+      </div>
+
+      <div class="reasons">
+        <p>✓ <b>Trend:</b> Bullish structure</p>
+        <p>✓ <b>Momentum:</b> Positive</p>
+        <p>✓ <b>EMA:</b> 9 above 21</p>
+        <p>✓ <b>RSI:</b> Supporting bullish momentum</p>
+      </div>
+
+      <div class="countdown">
+        <span>Signal status</span>
+        <strong id="timer1">02:00</strong>
+      </div>
+
+    </div>
+
+
+    <!-- SIGNAL 2 -->
+    <div class="signal-card put">
+
+      <div class="new-signal">📊 PREVIOUS ANALYSIS • DEMO</div>
+
+      <div class="asset-row">
+        <div class="asset">
+          🇬🇧 GBP/USD
+        </div>
+        <div class="time">11:05:00</div>
+      </div>
+
+      <div class="direction">
+        <div>
+          <div class="direction-label">DIRECTION</div>
+          <div class="direction-value put-text">PUT ↓</div>
+        </div>
+
+        <div style="text-align:right;">
+          <div class="direction-label">EXPIRY</div>
+          <strong>2 MIN</strong>
+        </div>
+      </div>
+
+      <div class="details">
+        <div class="detail">
+          <small>TIMEFRAME</small>
+          <strong>1 MIN</strong>
+        </div>
+
+        <div class="detail">
+          <small>SCORE</small>
+          <strong>78/100</strong>
+        </div>
+
+        <div class="detail">
+          <small>CONFIDENCE</small>
+          <strong>MEDIUM</strong>
+        </div>
+      </div>
+
+      <div class="score">
+        <div class="score-top">
+          <span>Analysis Strength</span>
+          <b>78%</b>
+        </div>
+        <div class="bar">
+          <div class="bar-fill" style="width:78%;"></div>
+        </div>
+      </div>
+
+      <div class="reasons">
+        <p>✓ <b>Trend:</b> Bearish structure</p>
+        <p>✓ <b>Momentum:</b> Negative</p>
+        <p>✓ <b>MACD:</b> Bearish pressure</p>
+        <p>⚠ <b>Risk:</b> Price near support</p>
+      </div>
+
+    </div>
+
+
+    <!-- NO TRADE -->
+    <div class="signal-card neutral">
+
+      <div class="new-signal">⚠ MARKET FILTER • DEMO</div>
+
+      <div class="asset-row">
+        <div class="asset">
+          🇯🇵 USD/JPY
+        </div>
+        <div class="time">10:59:00</div>
+      </div>
+
+      <div class="direction">
+        <div>
+          <div class="direction-label">DECISION</div>
+          <div class="direction-value neutral-text">NO TRADE</div>
+        </div>
+
+        <div style="text-align:right;">
+          <div class="direction-label">SCORE</div>
+          <strong>54/100</strong>
+        </div>
+      </div>
+
+      <div class="reasons">
+        <p>⚠ <b>Market:</b> Choppy conditions detected</p>
+        <p>⚠ <b>Trend:</b> Conflicting signals</p>
+        <p>⚠ <b>Volatility:</b> Unclear</p>
+        <p>✓ <b>Protection:</b> Trade blocked</p>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="warning">
+    ⚠ <b>Risk Notice:</b> This application is an analysis and
+    decision-support prototype. Demo signals are illustrative
+    and are not live market predictions or guaranteed results.
+    Never risk money you cannot afford to lose.
+  </div>
+
+
+  <nav class="bottom-nav">
+    <div class="nav-item active">
+      <span class="nav-icon">📡</span>
+      Signals
+    </div>
+
+    <div class="nav-item">
+      <span class="nav-icon">📈</span>
+      Chart
+    </div>
+
+    <div class="nav-item">
+      <span class="nav-icon">🧠</span>
+      Analysis
+    </div>
+
+    <div class="nav-item">
+      <span class="nav-icon">📒</span>
+      Journal
+    </div>
+  </nav>
+
+</div>
+
+
+<script>
+
+  let seconds = 120;
+
+  function updateTimer() {
+    const timer = document.getElementById("timer1");
+
+    if (!timer) return;
+
+    if (seconds <= 0) {
+      timer.textContent = "EXPIRED";
+      return;
+    }
+
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+
+    timer.textContent =
+      String(minutes).padStart(2, "0") +
+      ":" +
+      String(secs).padStart(2, "0");
+
+    seconds--;
+  }
+
+  setInterval(updateTimer, 1000);
+  updateTimer();
+
+
+  function analyzeMarket() {
+
+    const asset = document.getElementById("asset").value;
+    const timeframe = document.getElementById("timeframe").value;
+
+    alert(
+      "TradeVision AI\\n\\n" +
+      "Market: " + asset + "\\n" +
+      "Timeframe: " + timeframe + "\\n\\n" +
+      "Analysis engine ready.\\n\\n" +
+      "Live market-data connection will be added in the next stage."
+    );
+  }
+
+</script>
+
+</body>
+</html>
